@@ -1,4 +1,4 @@
-auto speedUp = []() {
+auto speedUp = []() { // The first variant of the cheat code with a lambda
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
@@ -7,13 +7,18 @@ auto speedUp = []() {
 
 class Solution {
 public:
-    Solution() {
+    Solution() { // The second variant of the cheat code with a constructor
         ios_base::sync_with_stdio(false);
         cin.tie(nullptr);
         cout.tie(nullptr);
     }
 
     // 125. Valid Palindrome
+    bool isAlphanumeric(char letter) {
+        return ('a' <= letter && letter <= 'z') or ('A' <= letter && letter <= 'Z') or
+			('0' <= letter && letter <= '9'); // Simpler version
+    }
+
     bool isAlphanumeric(char letter) {
         if('a' <= letter && letter <= 'z') {
             return true;
@@ -31,9 +36,9 @@ public:
         int l = 0, r = s.size() - 1;
         while(l < r) {
             if(not isAlphanumeric(s[l])) {
-                l++;
+                l++; // Skip non-alphanumeric chars
             } else if(not isAlphanumeric(s[r])) {
-                r--;
+                r--; // Skip non-alphanumeric chars
             } else {
                 if(tolower(s[l]) != tolower(s[r])) {
                     return false;
@@ -112,5 +117,79 @@ public:
         }
         return l;
     }
+	// 206. Reverse Linked List
+	// Recursive solution
+	ListNode* helper(ListNode* head) {
+        if(head->next == nullptr) {
+            return head;
+        }
+        auto lastElem = helper(head->next);
+        head->next->next = head;
+        return lastElem;
+    }
 
+    ListNode* reverseList(ListNode* head) {
+        if(head == nullptr) {
+            return nullptr;
+        }
+        if(head->next == nullptr) {
+            return head;
+        }
+        auto lastElem = helper(head->next);
+        head->next->next = head;
+        head->next = nullptr;
+        return lastElem;
+    }
+	// Loop solution
+	ListNode* reverseList(ListNode* head) {
+        auto currentElement = head;
+        ListNode* previousElement = nullptr;
+        while(currentElement != nullptr) {
+            auto newCurr = currentElement->next;
+            currentElement->next = previousElement;
+            previousElement = currentElement;
+            currentElement = newCurr;
+        }
+        return previousElement;
+    }
+
+	// 53. Maximum Subarray
+	// Prefix sum solution
+	int maxSubArray(vector<int> &nums) {
+        int n = nums.size();
+        vector<int> prefixSum(n);
+        prefixSum[0] = nums[0];
+        for(int i = 1; i < n; i++) {
+            prefixSum[i] = prefixSum[i - 1] + nums[i];
+        }
+
+        int maxSum = nums[0];
+        for(int l = 0; l < n; l++) {
+            for(int r = l; r < n; r++) {
+                int rangeSum = prefixSum[r] - (l == 0 ? 0 : prefixSum[l - 1]);
+                if(rangeSum > maxSum) {
+                    maxSum = rangeSum;
+                }
+            }
+        }
+        return maxSum;
+    }
+
+	// Kadane's algo or DP solution
+    int maxSubArray(vector<int> &nums) {
+        int n = nums.size();
+        int maxSum = nums[0];
+        int maxSubarraySum = 0; // S[i]
+        for(int i = 0; i < n; i++) {
+            if(maxSubarraySum <= 0) {
+                maxSubarraySum = nums[i];
+            } else {
+                maxSubarraySum = maxSubarraySum + nums[i];
+            }
+            if(maxSubarraySum > maxSum) {
+                maxSum = maxSubarraySum;
+            }
+        }
+        return maxSum;
+    }
 };
