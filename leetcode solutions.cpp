@@ -210,7 +210,7 @@ public:
         return (a - 1) * (pq.top() - 1);
     }
 
-	//1642. Furthest Building You Can Reach. Time = O(n*log(l)), Space = O(l), where l is a number of ladders.
+	// 1642. Furthest Building You Can Reach. Time = O(n*log(l)), Space = O(l), where l is a number of ladders.
     int furthestBuilding(vector<int> &hs, int b, int l) {
         int n = hs.size() - 1;
         priority_queue<int, vector<int>, greater<int>> largestJmps;
@@ -309,4 +309,97 @@ public:
 		}
 		return nums.back();
 	}
+
+	// 70. Climbing Stairs
+    vector<int> memo;
+
+    int helper(int n) { // Memory call-stack + Memo: O(n)
+        if(n == 1) {
+            return 1;
+        }
+        if(n == 2) {
+            return 2;
+        }
+        if(memo[n] == -1) {
+            memo[n] = helper(n - 2) + helper(n - 1);
+        }
+        return memo[n];
+    }
+
+    int climbStairs(int n) { // Recursion
+		memo = vector<int>(n, -1);
+		return helper(n);
+    }
+
+
+    int climbStairs(int n) {
+        memo = vector<int>(n + 1);
+        memo[0] = 0;
+        memo[1] = 1;
+        for(int i = 2; i <= n; i++) {
+
+        }
+        return f0; // bottom-up, extra space, memory complexity O(n)
+    }
+
+    int climbStairs(int n) { //bottom-up, no extra memory (space), memory complexity O(1)
+        long f0 = 1, f1 = 2;
+        for(int i = 0; i < n - 1; i++) {
+            long newF = f0 + f1;
+            f0 = f1;
+            f1 = newF;
+        }
+        return f0; // bottom-up
+    }
+
+	// 1431. Kids With the Greatest Number of Candies
+    vector<bool> kidsWithCandies(vector<int> &candies, int extraCandies) {
+        int n = candies.size();
+        vector<bool> result(n);
+        int maxElem = *max_element(candies.begin(), candies.end()); // build-in max_element find max element in a vector
+        for(int i = 0; i < n; i++) {
+            result[i] = (candies[i] + extraCandies) >= maxElem;
+        }
+        return result;
+    }
+
+	// 88. Merge Sorted Array
+    void merge(vector<int> &nums1, int m, vector<int> &nums2, int n) {
+        vector<int> arr(m + n);
+        int i = 0, j = 0;
+        for(int k = 0; i < m || j < n; k++) {
+            if(i >= m) {
+                arr[k] = nums2[j];
+                j++;
+            } else if(j >= n) {
+                arr[k] = nums1[i];
+                i++;
+            } else {
+                if(nums1[i] < nums2[j]) {
+                    arr[k] = nums1[i];
+                    i++;
+                } else {
+                    arr[k] = nums2[j];
+                    j++;
+                }
+            }
+        }
+        nums1 = arr;
+    }
+	// 69. Sqrt(x)
+    int mySqrt(long x) {
+        long l = 0, r = x;
+        while(l < r) { // Binary search. Time = log(x).
+            long mid = l + (r - l + 1) / 2;
+            long sq = mid * mid;
+            if(sq == x) {
+                return mid;
+            } else if(sq < x) {
+                l = mid;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
 };
