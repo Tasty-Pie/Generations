@@ -450,4 +450,72 @@ public:
         return 1 + min(leftDepth, rightDepth);
     }
 
+	//2236. Root Equals Sum of Children
+    bool checkTree(TreeNode* root) {
+        return (root->val == root->left->val + root->right->val);
+    }
+
+	// 100. Same Tree
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(p == q) {
+            return true;
+        }
+        if((p == nullptr and q != nullptr) or (p != nullptr and q == nullptr)) {
+            return false;
+        }
+        if(p->val != q->val) {
+            return false;
+        }
+        return isSameTree(p->left, q->left) and isSameTree(p->right, q->right);
+    }
+
+	// 700. Search in a Binary Search Tree
+    TreeNode* searchBST(TreeNode* root, int val) {
+        auto currNode = root;
+        while(currNode != nullptr) {
+            if(currNode->val == val) {
+                return currNode;
+            } else if(currNode->val > val) {
+                currNode = currNode->left;
+            } else {
+                currNode = currNode->right;
+            }
+        }
+        return nullptr;
+    }
+
+	// 701. Insert into a Binary Search Tree
+    TreeNode* insertIntoBST(TreeNode *root, int val) {
+        if(root == nullptr) {
+            return new TreeNode(val);
+        }
+        if(root->val < val) {
+            if(root->right == nullptr) {
+                root->right = new TreeNode(val);
+            } else {
+                insertIntoBST(root->right, val);
+            }
+        }
+        else {
+            if(root->left == nullptr) {
+                root->left = new TreeNode(val);
+            } else {
+                insertIntoBST(root->left, val);
+            }
+        }
+        return root;
+    }
+
+	// 108. Convert Sorted Array to Binary Search Tree
+    TreeNode* helper(vector<int> &nums, int l, int r) {
+        if(r < l) {
+            return nullptr;
+        }
+        int mid = (l + r) / 2;
+        return new TreeNode(nums[mid], helper(nums, l, mid - 1), helper(nums, mid + 1, r));
+    }
+
+    TreeNode* sortedArrayToBST(vector<int> &nums) {
+        return helper(nums, 0, nums.size() - 1);
+    }
 };
