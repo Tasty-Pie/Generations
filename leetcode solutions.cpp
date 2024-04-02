@@ -386,6 +386,7 @@ public:
         }
         nums1 = arr;
     }
+
 	// 69. Sqrt(x)
     int mySqrt(long x) {
         long l = 0, r = x;
@@ -402,4 +403,51 @@ public:
         }
         return l;
     }
+
+	// 94. Binary Tree Inorder Traversal
+    vector<int> inorderTraversal(TreeNode* root) {
+        if(root == nullptr) {
+            return {};
+        }
+        vector<int> leftSide = inorderTraversal(root->left);
+        leftSide.push_back(root->val);
+        vector<int> rightSide = inorderTraversal(root->right);
+        for(int elem : rightSide) {
+            leftSide.push_back(elem);
+        }
+        return leftSide;
+    }
+
+	// 104. Maximum Depth of Binary Tree
+	int maxDepth(TreeNode* root) {
+        if(root == nullptr) {
+            return 0;
+        }
+        int leftDepth = maxDepth(root->left);
+        int rightDepth = maxDepth(root->right);
+        return 1 + max(leftDepth, rightDepth);
+    }
+
+	// 111. Minimum Depth of Binary Tree
+	bool isLeaf(TreeNode* node) {
+        return node->left == nullptr and node->right == nullptr;
+    }
+
+    int minDepth(TreeNode* root) {
+        if(root == nullptr) {
+            return 0;
+        }
+        if(isLeaf(root)) {
+            return 1;
+        }
+        int leftDepth = INT_MAX, rightDepth = INT_MAX;
+        if(root->left != nullptr) {
+            leftDepth = minDepth(root->left);
+        }
+        if(root->right != nullptr) {
+            rightDepth = minDepth(root->right);
+        }
+        return 1 + min(leftDepth, rightDepth);
+    }
+
 };
