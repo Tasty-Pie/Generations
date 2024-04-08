@@ -518,4 +518,140 @@ public:
     TreeNode* sortedArrayToBST(vector<int> &nums) {
         return helper(nums, 0, nums.size() - 1);
     }
+
+	// 202. Happy Number
+	bool isHappy(int n) {
+        unordered_set<int> seen;
+        while(n != 1) {
+            if(seen.contains(n)) {
+                return false;
+            }
+            seen.insert(n);
+            int newN = 0;
+            while(n != 0) {
+                int digit = n % 10;
+                newN += digit * digit;
+                n /= 10;
+            }
+            n = newN;
+        }
+        return true;
+    }
+
+	// 771. Jewels and Stones
+	int numJewelsInStones(string jewels, string stones) {
+        unordered_set<char> jewelSet(jewels.begin(), jewels.end());
+        int count = 0;
+        for(char stone : stones) {
+            if(jewelSet.contains(stone)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+	// 268. Missing Number
+	int missingNumber(vector<int> &nums) {
+        int n = nums.size();
+        unordered_set<int> numSet(nums.begin(), nums.end());
+        for(int i = 0; i <= n; i++) {
+            if(not numSet.contains(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int missingNumber(vector<int> &nums) {
+        int n = nums.size();
+        bool present[n + 1];
+        for(int i = 0; i <= n; i++) {
+            present[i] = false;
+        }
+        for(int elem : nums) {
+            present[elem] = true;
+        }
+        for(int i = 0; i <= n; i++) {
+            if(not present[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int missingNumber(vector<int>& nums) {
+        for(int i = 0; i < nums.size(); i++) {
+            int currNum = nums[i];
+            while(currNum >= 0 and currNum < nums.size()) {
+                int temp = nums[currNum];
+                nums[currNum] = -1;
+                currNum = temp;
+            }
+        }
+        int i = 0;
+        for(; i < nums.size() and nums[i] == -1; i++) {
+            ;
+        }
+        return i;
+    }
+
+    int missingNumber(vector<int> &nums) {
+        int n = nums.size();
+        int sum = n * (n + 1) / 2;
+        for(int elem : nums) {
+            sum -= elem;
+        }
+        return sum;
+    }
+
+	// 1002. Find Common Characters
+    vector<string> commonChars(vector<string> &words) {
+        int n = words.size();
+        int numCounts[26];
+        for(char ch = 'a'; ch <= 'z'; ch++) {
+            numCounts[ch - 'a'] = INT_MAX;
+        }
+        for(string &word : words) {
+            unordered_map<char, int> table;
+            for(char ch = 'a'; ch <= 'z'; ch++) {
+                table[ch] = 0;
+            }
+            for(char ch : word) {
+                table[ch]++;
+            }
+            for(auto [ch, count] : table) { // structured binding
+                numCounts[ch - 'a'] = min(numCounts[ch - 'a'], count);
+            }
+        }
+        vector<string> result;
+        for(char ch = 'a'; ch <= 'z'; ch++) {
+            for(int i = 0; i < numCounts[ch - 'a']; i++) {
+                result.push_back(string(1, ch));
+            }
+        }
+        return result;
+    }
+
+	// 783. Minimum Distance Between BST Nodes
+    vector<int> array;
+
+    void inorderConvert(TreeNode* root) {
+        if(root == nullptr) {
+            return;
+        }
+        inorderConvert(root->left);
+        array.push_back(root->val);
+        inorderConvert(root->right);
+    }
+
+    int minDiffInBST(TreeNode* root) {
+        array = vector<int>();
+        inorderConvert(root);
+        int n = array.size();
+        int minDiff = INT_MAX;
+        for(int i = 1; i < n; i++) {
+            minDiff = min(minDiff, array[i] - array[i - 1]);
+        }
+        return minDiff;
+    }
 };
