@@ -654,4 +654,118 @@ public:
         }
         return minDiff;
     }
+
+	// 100. Same Tree
+	bool isSameTree(TreeNode* p, TreeNode* q) {
+        queue<TreeNode*> bfsQueue1, bfsQueue2;
+        bfsQueue1.push(p);
+        bfsQueue2.push(q);
+        while(not bfsQueue1.empty() and not bfsQueue2.empty()) {
+            TreeNode *node1 = bfsQueue1.front();
+            bfsQueue1.pop();
+
+            TreeNode *node2 = bfsQueue2.front();
+            bfsQueue2.pop();
+
+            if(node1 == nullptr and node2 == nullptr) {
+                ;
+            } else if(node1 != nullptr and node2 == nullptr) {
+                return false;
+            } else if(node1 == nullptr and node2 != nullptr) {
+                return false;
+            } else {
+                if(node1->val != node2->val) {
+                    return false;
+                }
+                bfsQueue1.push(node1->left);
+                bfsQueue1.push(node1->right);
+
+                bfsQueue2.push(node2->left);
+                bfsQueue2.push(node2->right);
+            }
+        }
+        if(bfsQueue1.empty() and bfsQueue2.empty()) {
+            return true;
+        }
+        return false;
+    }
+
+	// 102. Binary Tree Level Order Traversal
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(root == nullptr) {
+            return {};
+        }
+        queue<TreeNode*> bfsQueue;
+        bfsQueue.push(root);
+        vector<vector<int>> result;
+        while(not bfsQueue.empty()) {
+            int currentSize = bfsQueue.size();
+            vector<int> currentLevel;
+            for(int i = 0; i < currentSize; i++) {
+                TreeNode* node = bfsQueue.front();
+                bfsQueue.pop();
+                currentLevel.push_back(node->val);
+                if(node->left != nullptr) {
+                    bfsQueue.push(node->left);
+                }
+                if(node->right != nullptr) {
+                    bfsQueue.push(node->right);
+                }
+            }
+            result.push_back(move(currentLevel));
+        }
+        return result;
+    }
+
+	// 200. Number of Islands
+    void bfsPaint(vector<vector<char>> &grid, int rootRow, int rootColumn) {
+        int m = grid.size(); // row size
+        int n = grid[0].size(); // column size;
+        queue<pair<int, int>> bfsQueue;
+        bfsQueue.push({rootRow, rootColumn});
+        while(not bfsQueue.empty()) {
+            auto [row, col] = bfsQueue.front();
+            bfsQueue.pop();
+            grid[row][col] = '0';
+            if(row - 1 >= 0) {
+                if(grid[row - 1][col] == '1') { // 1 - land, 0 - water
+                    grid[row - 1][col] = '2';
+                    bfsQueue.push({row - 1, col});
+                }
+            }
+            if(col - 1 >= 0) {
+                if(grid[row][col - 1] == '1') { // 1 - land, 0 - water
+                    grid[row][col - 1] = '2';
+                    bfsQueue.push({row, col - 1});
+                }
+            }
+            if(row + 1 < m) {
+                if(grid[row + 1][col] == '1') { // 1 - land, 0 - water
+                    grid[row + 1][col] = '2';
+                    bfsQueue.push({row + 1, col});
+                }
+            }
+            if(col + 1 < n) {
+                if(grid[row][col + 1] == '1') { // 1 - land, 0 - water
+                    grid[row][col + 1] = '2';
+                    bfsQueue.push({row, col + 1});
+                }
+            }
+        }
+    }
+
+    int numIslands(vector<vector<char>> &grid) {
+        int m = grid.size(); // row size
+        int n = grid[0].size(); // column size;
+        int countIslands = 0;
+        for(int row = 0; row < m; row++) {
+            for(int col = 0; col < n; col++) {
+                if(grid[row][col] == '1') {
+                    bfsPaint(grid, row, col);
+                    countIslands++;
+                }
+            }
+        }
+        return countIslands;
+    }
 };
