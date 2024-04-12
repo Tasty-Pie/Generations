@@ -768,4 +768,111 @@ public:
         }
         return countIslands;
     }
+
+	// 1161. Maximum Level Sum of a Binary Tree
+    int maxLevelSum(TreeNode* root) {
+        queue<TreeNode*> bfsQueue;
+        bfsQueue.push(root);
+        int maxSum = INT_MIN;
+        int maxSumLevel = 0;
+        int count = 1;
+        while (not bfsQueue.empty()){
+            int currentSize = bfsQueue.size();
+            int sum = 0;
+            for(int i = 0; i < currentSize; i++){
+                TreeNode* node = bfsQueue.front();
+                bfsQueue.pop();
+                if(node->left != nullptr){
+                    bfsQueue.push(node->left);
+                }
+                if(node->right != nullptr){
+                    bfsQueue.push(node->right);
+                }
+                sum = sum + node->val;
+            }
+            if(sum > maxSum){
+                maxSum = sum;
+                maxSumLevel = count;
+            }
+            count++;
+        }
+        return maxSumLevel;
+    }
+
+	// 1971. Find if Path Exists in Graph
+    bool validPath(int n, vector<vector<int>> &edges, int source, int destination) {
+        bool visited[n];
+        for(int i = 0; i < n; i++) {
+            visited[i] = false;
+        }
+        // edge list -> adjacency list
+        vector<vector<int>> adjList(n);
+        for(auto &edge : edges) {
+            adjList[edge[0]].push_back(edge[1]);
+            adjList[edge[1]].push_back(edge[0]);
+        }
+        queue<int> bfs;
+        bfs.push(source);
+        while(not bfs.empty()) {
+            int currentNode = bfs.front();
+            if(currentNode == destination) {
+                return true;
+            }
+            bfs.pop();
+            visited[currentNode] = true;
+            for(int neighbour : adjList[currentNode]) {
+                if(not visited[neighbour]) {
+                    bfs.push(neighbour);
+                }
+            }
+        }
+        return false;
+    }
+
+	// 199. Binary Tree Right Side View
+	vector<int> rightSideView(TreeNode* root) {
+        if(root == nullptr) {
+            return {};
+        }
+        queue<TreeNode*> bfsQueue;
+        bfsQueue.push(root);
+        vector<int> result;
+
+        while (not bfsQueue.empty()){
+            int currentSize = bfsQueue.size();
+            TreeNode* node;
+            for(int i = 0; i < currentSize; i++){
+                node = bfsQueue.front();
+                bfsQueue.pop();
+                if(node->left != nullptr){
+                    bfsQueue.push(node->left);
+                }
+                if(node->right != nullptr){
+                    bfsQueue.push(node->right);
+                }
+            }
+            result.push_back(node->val);
+        }
+        return result;
+    }
+
+	// 42. Trapping Rain Water
+    int trap(const vector<int> &height) {
+        int n = height.size();
+        int total = 0;
+        int leftMax = height.front(), rightMax = height.back();
+        int l = 1, r = n - 2;
+        while(l <= r) {
+            if(leftMax < rightMax) {
+                total += max(0, leftMax - height[l]);
+                leftMax = max(leftMax, height[l]);
+                l++;
+            } else {
+                total += max(0, rightMax - height[r]);
+                rightMax = max(rightMax, height[r]);
+                r--; 
+            }
+        }
+        return total;
+    }
 };
